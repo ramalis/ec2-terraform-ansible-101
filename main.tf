@@ -8,10 +8,6 @@ resource "aws_instance" "test_box" {
   key_name           = "terraform_keypair"
   instance_type     = "t2.micro"
   availability_zone = "ap-south-1a"
-  user_data         = <<EOF
-    #!/bin/bash
-    apt-get install python -y
-  EOF
   tags = {
     Name = "ec2-TF-Ansible"
   }
