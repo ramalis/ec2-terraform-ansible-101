@@ -2,5 +2,9 @@
 .vagrant
 *.log
 .terraform
-terraform.tfstate*
+terraform.tfstate
+terraform.tfstate.backup
 *.pem
+*.pub
+myssh_key
+*.tfvars

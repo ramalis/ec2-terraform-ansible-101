@@ -1,18 +1,32 @@
+variable "region" {}
+variable "profile" {}
+variable "ami" {}
+variable "ec2type" {}
+variable "keyname" {}
+variable "username" {}
+variable "path-to-public-key" {}
+
+data "aws_availability_zones" "azone" {}
 
 provider "aws" {
-  region  = "ap-south-1"
-  profile = "test"
+  region  = "${var.region}"
+  profile = "${var.profile}"
 }
-resource "aws_instance" "test_box" {
-  ami               = "ami-020ca1ee6a0f716a9"
-  key_name           = "terraform_keypair"
-  instance_type     = "t2.micro"
-  availability_zone = "ap-south-1a"
+resource "aws_key_pair" "myssh_key" {
+  key_name   = "${var.keyname}"
+  public_key = "${file("${var.path-to-public-key}")}"
+}
+resource "aws_instance" "terraform-ansible-testbox" {
+  ami                         = "${var.ami}"
+  key_name                    = "${var.keyname}"
+  instance_type               = "${var.ec2type}"
+  availability_zone           = "${data.aws_availability_zones.azone.names[0]}"
+  associate_public_ip_address = true
   tags = {
-    Name = "ec2-TF-Ansible"
+    Name = "Terraform-Ansible-Testbox"
   }
   provisioner "local-exec" {
-    command = "sleep 30 && ansible-playbook -i ${self.public_ip}, master-playbook.yml --key-file=./terraform_keypair.pem -u ubuntu"
+    command = "sleep 30 && ansible-playbook -i ${self.public_ip}, master-playbook.yml --key-file=./${var.keyname} -u ${var.username}"
   }
 }
 
