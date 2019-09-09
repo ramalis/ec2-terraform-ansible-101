@@ -1,0 +1,45 @@
+---
+- hosts: db_vm
+  vars:
+  - installers:
+      - curl
+      - redis-server
+  tasks:
+  - name: set ulimit
+    copy:
+      src: limits.conf
+      dest: /etc/security/limits.conf
+    become: yes
+  - name: disable bash history
+    lineinfile:
+      path: ~/.bashrc
+      regexp: 'HISTSIZE=1000'
+      line: HISTSIZE=
+  - name: install packages
+    apt:
+      name: "{{ item }}"
+    become: yes
+    with_items: "{{installers}}"
+  - name: set connection tracking
+    lineinfile:
+      path: /etc/sysctl.conf
+      line: net.netfilter.nf_conntrack_max=65528
+      create: yes
+    become: yes
+  - name: set redis to use different port
+    lineinfile:
+      path: /etc/redis/redis.conf
+      regexp: 'port 6379'
+      line: port 10000
+    become: yes
+  - name: set redis to use password
+    lineinfile:
+      path: /etc/redis/redis.conf
+      regexp: '# requirepass *'
+      line: "requirepass password"
+    become: yes
+  - name: log redis service status
+    cron:
+      name: "check redis"
+      job: "service redis status | grep running || logger 'redis service is not running'"
+    become: yes

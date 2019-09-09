@@ -1,0 +1,2 @@
+[db_vm]
+192.168.33.10 ansible_connection=ssh ansible_ssh_user=vagrant
