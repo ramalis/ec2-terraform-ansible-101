@@ -1,5 +1,5 @@
 ---
-- hosts: db_vm
+- hosts: all
   vars:
   - installers:
       - curl
@@ -17,9 +17,9 @@
       line: HISTSIZE=
   - name: install packages
     apt:
-      name: "{{ item }}"
+      name: '{{ installers }}'
+      update_cache: yes
     become: yes
-    with_items: "{{installers}}"
   - name: set connection tracking
     lineinfile:
       path: /etc/sysctl.conf
