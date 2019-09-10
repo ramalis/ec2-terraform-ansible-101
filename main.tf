@@ -13,8 +13,8 @@ provider "aws" {
   profile = "${var.profile}"
 }
 resource "aws_key_pair" "myssh_key" {
-  key_name   = "${var.keyname}"
-  public_key = "${file("${var.path-to-public-key}")}"
+  key_name   = var.keyname
+  public_key = file(var.path-to-public-key)
 }
 resource "aws_instance" "terraform-ansible-testbox" {
   ami                         = "${var.ami}"
