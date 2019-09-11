@@ -1,13 +1,14 @@
-variable "region" {}
-variable "profile" {}
-variable "ami" {}
-variable "ec2type" {}
-variable "username" {}
-variable "path-to-public-key" {}
-data "aws_availability_zones" "azone" {}
+
 provider "aws" {
   region  = var.region
   profile = var.profile
+}
+module "network" {
+  source              = "./network"
+  myvpc_cidr          = var.myvpc_cidr
+  myvpc_tenancy       = var.myvpc_tenancy
+  public_subnet_cidr  = var.public_subnet_cidr
+  private_subnet_cidr = var.private_subnet_cidr
 }
 resource "aws_key_pair" "myssh_key" {
   key_name   = "myssh_key"
@@ -18,6 +19,8 @@ resource "aws_instance" "terraform-ansible-testbox" {
   key_name                    = aws_key_pair.myssh_key.key_name
   instance_type               = var.ec2type
   availability_zone           = data.aws_availability_zones.azone.names[0]
+  vpc_security_group_ids      = [module.network.sg_id]
+  subnet_id                   = module.network.public_subnet_id
   associate_public_ip_address = true
   tags = {
     Name = "Terraform-Ansible-Testbox"
