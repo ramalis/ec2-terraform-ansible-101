@@ -2,6 +2,7 @@ provider "aws" {
   region  = var.region
   profile = var.profile
 }
+//Calling Network Module to root module
 module "network" {
   source              = "./network"
   myvpc_cidr          = var.myvpc_cidr
