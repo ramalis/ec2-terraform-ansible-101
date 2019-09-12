@@ -69,7 +69,7 @@ resource "aws_route_table" "private_table" {
     Name = "private_table"
   }
 }
-// Attach Internet Gateways 
+// Attach Internet Gateways to public subnet
 resource "aws_route" "public_route" {
   route_table_id         = aws_route_table.public_table.id
   destination_cidr_block = "0.0.0.0/0"
@@ -91,7 +91,7 @@ resource "aws_route_table_association" "private_subnet_association" {
   subnet_id      = aws_subnet.private_subnet.id
   route_table_id = aws_route_table.private_table.id
 }
-// Create Security Groups
+// Create Security Group
 resource "aws_security_group" "mysg" {
   name        = "mysg"
   description = "Allow  SSH HTTP traffic"

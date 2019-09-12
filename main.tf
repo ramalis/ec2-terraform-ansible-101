@@ -1,4 +1,3 @@
-
 provider "aws" {
   region  = var.region
   profile = var.profile
@@ -29,26 +28,27 @@ resource "aws_instance" "terraform-ansible-testbox" {
     command = "sleep 30 && ansible-playbook -i ${self.public_ip}, master-playbook.yml --key-file=./${aws_key_pair.myssh_key.key_name} -u ${var.username}"
   }
 }
-# create a dynamodb table for locking the state file
-# resource "aws_dynamodb_table" "dynamodb-terraform-state-lock" {
-#   name           = "terraform-state-lock-dynamo"
-#   hash_key       = "LockID"
-#   read_capacity  = 20
-#   write_capacity = 20
-#   attribute {
-#     name = "LockID"
-#     type = "S"
-#   }
-#   tags   = {
-#     Name = "DynamoDB Terraform State Lock Table"
-#   }
-# }
+// create a dynamodb table for locking the state file
+resource "aws_dynamodb_table" "dynamodb-terraform-state-lock" {
+  name           = "terraform-state-lock-dynamo"
+  hash_key       = "LockID"
+  read_capacity  = 20
+  write_capacity = 20
+  attribute {
+    name = "LockID"
+    type = "S"
+  }
+  tags = {
+    Name = "DynamoDB Terraform State Lock Table"
+  }
+}
+// Create Remote s3 Backend
 # terraform {
 #   backend "s3" {
 #     bucket         = "my-tftest-s3bucket"
 #     encrypt        = true
-#     key            = "terraform.tfstate"
 #     region         = "ap-south-1"
+#     key            = "terraform.tfstate"
 #     dynamodb_table = "terraform-state-lock-dynamo"
 #   }
 # }
