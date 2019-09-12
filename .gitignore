@@ -7,4 +7,3 @@ terraform.tfstate.backup
 *.pem
 *.pub
 myssh_key
-*.tfvars
