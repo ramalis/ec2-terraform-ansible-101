@@ -15,7 +15,7 @@ resource "aws_key_pair" "myssh_key" {
   public_key = file(var.path-to-public-key)
 }
 resource "aws_instance" "terraform-ansible-testbox" {
-  ami                         = var.ami
+  ami                         = lookup(var.amis, var.region)
   key_name                    = aws_key_pair.myssh_key.key_name
   instance_type               = var.ec2type
   availability_zone           = data.aws_availability_zones.azone.names[0]
@@ -29,20 +29,20 @@ resource "aws_instance" "terraform-ansible-testbox" {
     command = "sleep 30 && ansible-playbook -i ${self.public_ip}, master-playbook.yml --key-file=./${aws_key_pair.myssh_key.key_name} -u ${var.username}"
   }
 }
-// create a dynamodb table for locking the state file
-resource "aws_dynamodb_table" "dynamodb-terraform-state-lock" {
-  name           = "terraform-state-lock-dynamo"
-  hash_key       = "LockID"
-  read_capacity  = 20
-  write_capacity = 20
-  attribute {
-    name = "LockID"
-    type = "S"
-  }
-  tags = {
-    Name = "DynamoDB Terraform State Lock Table"
-  }
-}
+# // create a dynamodb table for locking the state file
+# resource "aws_dynamodb_table" "dynamodb-terraform-state-lock" {
+#   name           = "terraform-state-lock-dynamo"
+#   hash_key       = "LockID"
+#   read_capacity  = 20
+#   write_capacity = 20
+#   attribute {
+#     name = "LockID"
+#     type = "S"
+#   }
+#   tags = {
+#     Name = "DynamoDB Terraform State Lock Table"
+#   }
+# }
 // Create Remote s3 Backend
 # terraform {
 #   backend "s3" {
