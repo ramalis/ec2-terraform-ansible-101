@@ -18,8 +18,6 @@ cat ~/.aws/credentials
 
 project module structure:
 
-ec2-terraform-ansible-101:
-
         |==>main
                 |==>main.tf
 
