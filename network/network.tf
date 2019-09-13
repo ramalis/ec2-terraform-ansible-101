@@ -38,7 +38,7 @@ resource "aws_internet_gateway" "igw" {
     Name = "igw-myvpc"
   }
 }
-// Create Elastic IP Address to assign to NAT Gateway
+// Create Elastic IP Address
 resource "aws_eip" "eip-natgw" {
   vpc        = true
   depends_on = [aws_internet_gateway.igw]
@@ -69,13 +69,13 @@ resource "aws_route_table" "private_table" {
     Name = "private_table"
   }
 }
-// Attach Internet Gateways to public subnet
+// Routing Public subnet traffic via IGW
 resource "aws_route" "public_route" {
   route_table_id         = aws_route_table.public_table.id
   destination_cidr_block = "0.0.0.0/0"
   gateway_id             = aws_internet_gateway.igw.id
 }
-// Attach NAT Gateway to Private Subnet
+// Routing Private subnet traffice via NATGW
 resource "aws_route" "private_route" {
   route_table_id         = aws_route_table.private_table.id
   destination_cidr_block = "0.0.0.0/0"
@@ -125,15 +125,7 @@ resource "aws_security_group" "mysg" {
   }
 }
 // Outputs 
-output "vpc_id" {
-  value       = aws_vpc.myvpc.id
-}
-output "public_subnet_id" {
-  value       = aws_subnet.public_subnet.id
-}
-output "private_subnet_id" {
-  value       = aws_subnet.private_subnet.id
-}
-output "sg_id" {
-  value       = aws_security_group.mysg.id
-}
+output "vpc_id" { value = aws_vpc.myvpc.id }
+output "public_subnet_id" { value = aws_subnet.public_subnet.id }
+output "private_subnet_id" { value = aws_subnet.private_subnet.id }
+output "sg_id" { value = aws_security_group.mysg.id }

@@ -29,6 +29,14 @@ resource "aws_instance" "terraform-ansible-testbox" {
     command = "sleep 30 && ansible-playbook -i ${self.public_ip}, master-playbook.yml --key-file=./${aws_key_pair.myssh_key.key_name} -u ${var.username}"
   }
 }
+resource "aws_s3_bucket" "my-terraform-tfstate-bucket" {
+  bucket = "my-terraform-tfstate-bucket"
+  acl    = "private"
+  tags = {
+    Name        = "my-terraform-tfstate-bucket"
+    Environment = "Dev"
+  }
+}
 # // create a dynamodb table for locking the state file
 # resource "aws_dynamodb_table" "dynamodb-terraform-state-lock" {
 #   name           = "terraform-state-lock-dynamo"
@@ -46,7 +54,7 @@ resource "aws_instance" "terraform-ansible-testbox" {
 // Create Remote s3 Backend
 # terraform {
 #   backend "s3" {
-#     bucket         = "my-tftest-s3bucket"
+#     bucket         = "my-terraform-tfstate-bucket"
 #     encrypt        = true
 #     region         = "ap-south-1"
 #     key            = "terraform.tfstate"
