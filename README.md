@@ -15,3 +15,12 @@ cat ~/.aws/config
 view your aws credentials : 
 
 cat ~/.aws/credentials
+
+project module structure:
+
+ec2-terraform-ansible-101
+        |--main.tf
+        |--vars.tf
+        |--terraform.tfvars
+        |-network module
+                |--network.tf
