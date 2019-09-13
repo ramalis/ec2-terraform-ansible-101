@@ -22,5 +22,10 @@ ec2-terraform-ansible-101
         |--main.tf
         |--vars.tf
         |--terraform.tfvars
+        |--ansible.cfg
+        |--hosts
+        |--limits.conf
+        |--master-playbook.yml
+        |--vagrantfile
         |-network module
                 |--network.tf
